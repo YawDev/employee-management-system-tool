@@ -76,7 +76,7 @@ export default function LoginForm() {
         type="submit"
         loading={submitting}
         loadingText="Signing in…"
-        className="mt-2"
+        className="mt-2 w-full"
       >
         Sign in
       </Button>
