@@ -1,15 +1,10 @@
 import AddTenantBtn from "@/components/ui/Tenants/AddTenantBtn";
 import TenantsTable from "@/components/ui/Tenants/TenantsTable";
-import { TenantRow } from "@/types/types";
+import { getTenantRows } from "@/lib/data/system/tenants";
 
-const tenants: TenantRow[] = [
-  { tenantId: 1, name: "Acme Corp", organizationCount: 3 },
-  { tenantId: 2, name: "Globex", organizationCount: 1 },
-  { tenantId: 3, name: "Initech", organizationCount: 2 },
-  { tenantId: 4, name: "Umbrella", organizationCount: 0 },
-];
+export default async function TenantsPage() {
+  const tenants = await getTenantRows();
 
-export default function TenantsPage() {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
