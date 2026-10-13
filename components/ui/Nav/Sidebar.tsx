@@ -10,6 +10,8 @@ import {
 } from "@tabler/icons-react";
 import Brand from "@/components/ui/Brand";
 import { initials, type CurrentUser } from "@/lib/session";
+import { User } from "@/types/types";
+import { logoutAction } from "@/app/login/actions";
 
 const links = [
   { href: "/", label: "Overview", icon: IconLayoutDashboard },
@@ -17,7 +19,7 @@ const links = [
   { href: "/organizations", label: "Organizations", icon: IconBuilding },
 ];
 
-export default function Sidebar({ user }: { user: CurrentUser }) {
+export default function Sidebar({ user }: { user: User }) {
   const pathname = usePathname();
 
   return (
@@ -50,20 +52,23 @@ export default function Sidebar({ user }: { user: CurrentUser }) {
 
       <div className="flex items-center gap-2.5 border-t border-navy-800 px-2 pt-4">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-navy-800 text-xs font-medium text-white">
-          {initials(user.name)}
+          {initials(String(user.firstName) + " " + String(user.lastName))}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm text-white">{user.name}</p>
+          <p className="truncate text-sm text-white">
+            {user.firstName} {user.lastName}
+          </p>
           <p className="text-xs text-navy-400">System admin</p>
         </div>
-        {/* TODO: call the BFF logout endpoint. */}
-        <button
-          type="button"
-          aria-label="Sign out"
-          className="text-navy-400 hover:text-white"
-        >
-          <IconLogout size={18} stroke={1.75} aria-hidden="true" />
-        </button>
+        <form action={logoutAction}>
+          <button
+            type="submit"
+            aria-label="Sign out"
+            className="text-navy-400 hover:text-white"
+          >
+            <IconLogout size={18} stroke={1.75} aria-hidden="true" />
+          </button>
+        </form>
       </div>
     </aside>
   );

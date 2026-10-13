@@ -1,42 +1,54 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useActionState, useState, type FormEvent } from "react";
+import { loginAction, type LoginState } from "@/app/login/actions";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 
 export default function LoginForm() {
+  const initialState: LoginState = { error: null };
+
+  const [state, formAction, pending] = useActionState(
+    loginAction,
+    initialState,
+  );
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const [clientError, setClientError] = useState<string | null>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
+    setClientError(null);
 
     const form = new FormData(event.currentTarget);
-    const email = String(form.get("email") ?? "").trim();
+    const username = String(form.get("userName") ?? "").trim();
     const password = String(form.get("password") ?? "");
 
-    if (!email || !password) {
-      setError("Enter your email and password.");
+    if (!username || !password) {
+      event.preventDefault();
+      setClientError("Enter your username and password.");
       return;
     }
 
-    setSubmitting(true);
-    // TODO: call the BFF login endpoint once it exists.
-    setSubmitting(false);
+    setClientError(null);
   }
 
+  const error = clientError ?? state.error;
+
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
+    <form
+      action={formAction}
+      onSubmit={handleSubmit}
+      noValidate
+      className="space-y-4"
+    >
       <TextField
-        id="email"
-        name="email"
-        type="email"
-        label="Email"
-        autoComplete="username"
-        placeholder="admin@company.com"
-        onChange={() => setError(null)}
+        id="userName"
+        name="userName"
+        type="text"
+        label="User ID"
+        autoComplete="userName"
+        placeholder="SystemAdmin"
+        defaultValue={state.userName ?? ""}
+        onChange={() => setClientError(null)}
       />
 
       <TextField
@@ -45,7 +57,7 @@ export default function LoginForm() {
         type={showPassword ? "text" : "password"}
         label="Password"
         autoComplete="current-password"
-        onChange={() => setError(null)}
+        onChange={() => setClientError(null)}
         labelAction={
           <a href="#" className="text-xs text-navy-500 hover:underline">
             Forgot password?
@@ -74,7 +86,7 @@ export default function LoginForm() {
 
       <Button
         type="submit"
-        loading={submitting}
+        loading={pending}
         loadingText="Signing in…"
         className="mt-2 w-full"
       >

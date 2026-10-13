@@ -1,10 +1,14 @@
-import { getCurrentUser, initials } from "@/lib/session";
+import { getInitialUser } from "@/lib/data/identity/auth";
+import { initials } from "@/lib/session";
+import { redirect } from "next/navigation";
 
 const environment = process.env.NEXT_PUBLIC_APP_ENV ?? "Local";
 
-export default function OverviewPage() {
-  const user = getCurrentUser();
-  const firstName = user.name.split(" ")[0];
+export default async function OverviewPage() {
+  const user = await getInitialUser();
+  if (!user) redirect("/login");
+
+  const firstName = user.firstName;
 
   return (
     <div className="space-y-6">
@@ -20,10 +24,12 @@ export default function OverviewPage() {
       <div className="max-w-md rounded-xl border border-slate-200 bg-white">
         <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-navy-500/10 text-sm font-medium text-navy-500">
-            {initials(user.name)}
+            {initials(user.firstName + " " + user.lastName)}
           </div>
           <div>
-            <p className="text-sm font-medium text-navy-900">{user.name}</p>
+            <p className="text-sm font-medium text-navy-900">
+              {user.firstName} {user.lastName}
+            </p>
             <p className="text-xs text-slate-500">{user.email}</p>
           </div>
         </div>

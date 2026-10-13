@@ -5,7 +5,7 @@ describe("LoginForm", () => {
   it("renders the email, password and sign in fields", () => {
     render(<LoginForm />);
 
-    expect(screen.getByLabelText("Email")).toBeInTheDocument();
+    expect(screen.getByLabelText("User ID")).toBeInTheDocument();
     expect(screen.getByLabelText("Password")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign in" })).toBeInTheDocument();
   });
@@ -24,7 +24,7 @@ describe("LoginForm", () => {
     render(<LoginForm />);
 
     fireEvent.click(screen.getByRole("button", { name: "Sign in" }));
-    fireEvent.change(screen.getByLabelText("Email"), {
+    fireEvent.change(screen.getByLabelText("User ID"), {
       target: { value: "admin@company.com" },
     });
 
