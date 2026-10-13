@@ -26,3 +26,12 @@ export type Department = {
   organizationId: number;
   description: string;
 };
+
+export type User = {
+  id: string;
+  userName: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: string | null;
+};
