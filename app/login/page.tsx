@@ -5,5 +5,6 @@ import { redirect } from "next/navigation";
 export default async function LoginPage() {
   const user = await getInitialUser();
   if (user) redirect("/");
+  // TODO: Call sys login instead of non sys login.
   return <LoginView />;
 }
