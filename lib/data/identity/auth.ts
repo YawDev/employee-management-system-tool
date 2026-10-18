@@ -117,15 +117,17 @@ export const getInitialUser = cache(async (): Promise<User | null> => {
   }
 });
 
+export type LoginResult = "ok" | "invalid" | "forbidden";
+
 // Logs in through EMT Identity API and copies its token cookies onto our own domain.
-// Returns false for bad credentials; Throws for other errors. (no token returned, server down)
+// Returns "invalid" for bad credentials, "forbidden" for a non-sys user; Throws for other errors. (no token returned, server down)
 export const login = async (
   userName: string,
   password: string,
-): Promise<boolean> => {
+): Promise<LoginResult> => {
   try {
     const response = await createHttpClient("identity").post(
-      "/api/auth/login",
+      "/sys-api/auth/login",
       { userName, password },
     );
 
@@ -140,10 +142,12 @@ export const login = async (
 
     const cookieStore = await cookies();
     tokenCookies.forEach((c) => cookieStore.set(c.name, c.value, c.options));
-    return true;
+    return "ok";
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401)
-      return false;
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401) return "invalid";
+      if (error.response?.status === 403) return "forbidden";
+    }
     throw error;
   }
 };

@@ -21,9 +21,15 @@ export async function loginAction(
   }
 
   try {
-    const ok = await login(userName, password);
-    if (!ok) {
+    const result = await login(userName, password);
+    if (result === "invalid") {
       return { error: "Invalid username or password", userName: userName };
+    }
+    if (result === "forbidden") {
+      return {
+        error: "You are not authorized to access the system portal.",
+        userName: userName,
+      };
     }
   } catch (error) {
     console.error(
