@@ -1,22 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { IconAlertTriangle, IconTrash } from "@tabler/icons-react";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
+import {
+  deleteTenantAction,
+  type DeleteTenantState,
+} from "@/app/(dashboard)/tenants/actions";
 
-export default function DeleteTenantDialog({ tenantName }: { tenantName: string }) {
+const initialState: DeleteTenantState = { error: null };
+
+export default function DeleteTenantDialog({
+  tenantId,
+  tenantName,
+}: {
+  tenantId: number;
+  tenantName: string;
+}) {
   const [open, setOpen] = useState(false);
   const [confirmation, setConfirmation] = useState("");
+  // On success the action redirects to /tenants, so only the error path comes back here.
+  const [state, formAction, pending] = useActionState(
+    deleteTenantAction,
+    initialState,
+  );
 
   function close() {
     setOpen(false);
     setConfirmation("");
-  }
-
-  function handleDelete() {
-    // TODO: call the delete-tenant Server Action, then redirect to /tenants.
-    close();
   }
 
   return (
@@ -36,42 +48,70 @@ export default function DeleteTenantDialog({ tenantName }: { tenantName: string 
           >
             <div className="flex gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-50">
-                <IconAlertTriangle size={18} className="text-red-700" aria-hidden="true" />
+                <IconAlertTriangle
+                  size={18}
+                  className="text-red-700"
+                  aria-hidden="true"
+                />
               </div>
               <div>
-                <h2 id="delete-tenant-title" className="text-base font-medium text-navy-900">
+                <h2
+                  id="delete-tenant-title"
+                  className="text-base font-medium text-navy-900"
+                >
                   Delete {tenantName}?
                 </h2>
                 <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
-                  This permanently deletes the tenant and everything under it. This can&apos;t be undone.
+                  This permanently deletes the tenant and everything under it.
+                  This can&apos;t be undone.
                 </p>
               </div>
             </div>
 
             <p className="my-4 rounded-lg bg-red-50 px-3 py-2.5 text-xs leading-relaxed text-red-800">
-              Also deletes all of its organizations, departments, managers and employees.
+              Also deletes all of its organizations, departments, managers and
+              employees.
             </p>
 
-            <TextField
-              id="delete-confirmation"
-              label={`Type ${tenantName} to confirm`}
-              autoComplete="off"
-              value={confirmation}
-              onChange={(event) => setConfirmation(event.target.value)}
-            />
+            <form action={formAction}>
+              <input type="hidden" name="tenantId" value={tenantId} />
+              <TextField
+                id="delete-confirmation"
+                label={`Type ${tenantName} to confirm`}
+                autoComplete="off"
+                value={confirmation}
+                onChange={(event) => setConfirmation(event.target.value)}
+              />
 
-            <div className="mt-5 flex justify-end gap-2">
-              <Button variant="secondary" onClick={close}>
-                Cancel
-              </Button>
-              <Button
-                variant="danger"
-                disabled={confirmation !== tenantName}
-                onClick={handleDelete}
-              >
-                Delete tenant
-              </Button>
-            </div>
+              {state.error && (
+                <p
+                  role="alert"
+                  className="mt-4 rounded-md bg-red-50 px-3 py-2 text-xs text-red-700"
+                >
+                  {state.error}
+                </p>
+              )}
+
+              <div className="mt-5 flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={close}
+                  disabled={pending}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="danger"
+                  disabled={confirmation !== tenantName}
+                  loading={pending}
+                  loadingText="Deleting…"
+                >
+                  Delete tenant
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       )}
