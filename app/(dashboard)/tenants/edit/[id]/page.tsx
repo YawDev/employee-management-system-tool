@@ -1,9 +1,13 @@
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import SaveTenantForm from "@/components/ui/Tenants/SaveTenantForm";
-import { getTenant } from "@/lib/data/system/tenants";
+import { getTenant } from "@/lib/data/core/tenants";
 
-const EditTenantPage = async ({ params }: { params: Promise<{ id: string }> }) => {
+const EditTenantPage = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
   const { id } = await params;
   const tenant = await getTenant(Number(id));
   if (!tenant) notFound();

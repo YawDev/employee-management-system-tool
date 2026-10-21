@@ -1,6 +1,6 @@
 import AddTenantBtn from "@/components/ui/Tenants/AddTenantBtn";
 import TenantsTable from "@/components/ui/Tenants/TenantsTable";
-import { getTenantRows } from "@/lib/data/system/tenants";
+import { getTenantRows } from "@/lib/data/core/tenants";
 
 export default async function TenantsPage() {
   const tenants = await getTenantRows();

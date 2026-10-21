@@ -16,7 +16,7 @@ describe("LoginForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "Sign in" }));
 
     expect(screen.getByRole("alert")).toHaveTextContent(
-      "Enter your email and password.",
+      "Enter your username and password.",
     );
   });
 
