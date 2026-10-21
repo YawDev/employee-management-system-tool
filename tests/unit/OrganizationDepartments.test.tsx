@@ -11,20 +11,20 @@ const departments = (n: number) =>
 
 describe("OrganizationDepartments", () => {
   it("shows the total count and each department name", () => {
-    render(<OrganizationDepartments departments={departments(2)} />);
+    render(<OrganizationDepartments organizationId={1} departments={departments(2)} />);
 
     expect(screen.getByText("· 2")).toBeInTheDocument();
     expect(screen.getByText("Dept 1")).toBeInTheDocument();
   });
 
   it("shows an empty state", () => {
-    render(<OrganizationDepartments departments={[]} />);
+    render(<OrganizationDepartments organizationId={1} departments={[]} />);
 
     expect(screen.getByText("No departments yet.")).toBeInTheDocument();
   });
 
   it("paginates past ten departments", () => {
-    render(<OrganizationDepartments departments={departments(12)} />);
+    render(<OrganizationDepartments organizationId={1} departments={departments(12)} />);
 
     expect(screen.queryByText("Dept 11")).not.toBeInTheDocument();
 
@@ -32,5 +32,23 @@ describe("OrganizationDepartments", () => {
 
     expect(screen.getByText("Dept 11")).toBeInTheDocument();
     expect(screen.queryByText("Dept 1")).not.toBeInTheDocument();
+  });
+
+  it("links each department to its page under the organization", () => {
+    render(<OrganizationDepartments organizationId={1} departments={departments(1)} />);
+
+    expect(screen.getByRole("link", { name: "Dept 1" })).toHaveAttribute(
+      "href",
+      "/organizations/1/departments/dep-1",
+    );
+  });
+
+  it("links to create a department in this organization", () => {
+    render(<OrganizationDepartments organizationId={1} departments={[]} />);
+
+    expect(screen.getByRole("link", { name: "Add department" })).toHaveAttribute(
+      "href",
+      "/organizations/1/departments/create",
+    );
   });
 });
