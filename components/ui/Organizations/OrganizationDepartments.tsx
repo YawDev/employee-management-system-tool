@@ -1,13 +1,16 @@
 "use client";
 
+import Link from "next/link";
+import { IconChevronRight, IconPlus } from "@tabler/icons-react";
 import NumberedPagination from "@/components/ui/NumberedPagination";
 import { usePagination } from "@/lib/usePagination";
 import type { Department } from "@/types/types";
 
-// No department detail page yet, so rows are plain text rather than links.
 export default function OrganizationDepartments({
+  organizationId,
   departments,
 }: {
+  organizationId: number;
   departments: Department[];
 }) {
   const { currentPage, setCurrentPage, totalPages, pageItems } =
@@ -16,13 +19,20 @@ export default function OrganizationDepartments({
   return (
     <div className="space-y-4">
       <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
-        <div className="px-4 py-3">
+        <div className="flex items-center justify-between px-4 py-3">
           <h2 className="text-sm font-medium text-navy-900">
             Departments{" "}
             <span className="font-normal text-slate-500">
               · {departments.length}
             </span>
           </h2>
+          <Link
+            href={`/organizations/${organizationId}/departments/create`}
+            className="flex items-center gap-1 text-xs text-navy-500 hover:underline"
+          >
+            <IconPlus size={13} aria-hidden="true" />
+            Add department
+          </Link>
         </div>
 
         {departments.length === 0 ? (
@@ -31,12 +41,20 @@ export default function OrganizationDepartments({
           </p>
         ) : (
           pageItems.map((department) => (
-            <div
+            <Link
               key={department.departmentId}
-              className="border-t border-slate-100 px-4 py-3 text-sm"
+              href={`/organizations/${organizationId}/departments/${department.departmentId}`}
+              className="group flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm text-navy-900 hover:bg-navy-500/10"
             >
-              <p className="text-navy-900">{department.name}</p>
-            </div>
+              <span className="group-hover:text-navy-500 group-hover:underline">
+                {department.name}
+              </span>
+              <IconChevronRight
+                size={14}
+                className="text-navy-500 opacity-0 group-hover:opacity-100"
+                aria-hidden="true"
+              />
+            </Link>
           ))
         )}
       </div>

@@ -22,8 +22,10 @@ export type CreateDepartment = {
   description: string | null;
 };
 
+// The edit endpoint's SaveDepartmentDto requires OrganizationId (an int); without it the API sees 0.
 export type UpdateDepartment = {
   departmentId: string;
+  organizationId: number;
   name: string;
   description: string | null;
 };
@@ -73,6 +75,12 @@ export type SaveAction = {
 // Represents the result of a delete action (e.g., deleting an entity).
 export type DeleteAction = {
   isDeleted: boolean;
+};
+
+// get-department-info returns the department with its people; only counts are shown for now.
+export type DepartmentDetails = Department & {
+  employees: unknown[];
+  managers: unknown[];
 };
 
 // get-organization-info returns the tenant nested (no flat tenantName) and its departments.

@@ -1,3 +1,4 @@
+import AddOrganizationBtn from "@/components/ui/Organizations/AddOrganizationBtn";
 import OrganizationsTable from "@/components/ui/Organizations/OrganizationsTable";
 import { getOrganizations } from "@/lib/data/core/organizations";
 
@@ -6,7 +7,10 @@ export default async function OrganizationsPage() {
 
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-medium text-navy-900">Organizations</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-medium text-navy-900">Organizations</h1>
+        <AddOrganizationBtn />
+      </div>
       <OrganizationsTable organizations={organizations} />
     </div>
   );

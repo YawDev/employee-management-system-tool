@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { IconEdit } from "@tabler/icons-react";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import { buttonClasses } from "@/components/ui/Button";
+import DeleteOrganizationDialog from "@/components/ui/Organizations/DeleteOrganizationDialog";
 import OrganizationDepartments from "@/components/ui/Organizations/OrganizationDepartments";
 import { getOrganizationById } from "@/lib/data/core/organizations";
 import { initials } from "@/lib/session";
@@ -39,13 +40,20 @@ const OrganizationDetailsPage = async ({
             {organization.name}
           </h1>
         </div>
-        <Link
-          href={`/organizations/edit/${organization.organizationId}`}
-          className={buttonClasses("primary")}
-        >
-          <IconEdit size={16} aria-hidden="true" />
-          Edit organization
-        </Link>
+        <div className="flex gap-2">
+          <DeleteOrganizationDialog
+            organizationId={organization.organizationId}
+            organizationName={organization.name}
+            tenantId={organization.tenantId}
+          />
+          <Link
+            href={`/organizations/edit/${organization.organizationId}`}
+            className={buttonClasses("primary")}
+          >
+            <IconEdit size={16} aria-hidden="true" />
+            Edit organization
+          </Link>
+        </div>
       </div>
 
       <dl className="grid grid-cols-[110px_1fr] gap-y-2.5 rounded-lg border border-slate-200 bg-white px-4 py-3.5 text-sm">
@@ -70,7 +78,10 @@ const OrganizationDetailsPage = async ({
         </dd>
       </dl>
 
-      <OrganizationDepartments departments={organization.departments} />
+      <OrganizationDepartments
+        organizationId={organization.organizationId}
+        departments={organization.departments}
+      />
     </div>
   );
 };

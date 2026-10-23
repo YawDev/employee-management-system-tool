@@ -5,6 +5,7 @@ import type {
   Organization,
   OrganizationDetails,
   UpdateOrganization,
+  CreateOrganization,
   DeleteAction,
   SaveAction,
 } from "@/types/types";
@@ -46,7 +47,7 @@ export async function editOrganization(
 }
 
 export async function createOrganization(
-  organization: UpdateOrganization,
+  organization: CreateOrganization,
 ): Promise<SaveAction> {
   const response = await createHttpClient("emtCore").post<SaveAction>(
     `/sys-api/create-organization`,
